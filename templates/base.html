@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lista de Tarefas Acessível{% endblock %}</title>
+    
+    <!-- WCAG: Meta tags para acessibilidade -->
+    <meta name="description" content="Aplicação web acessível para gerenciamento de tarefas">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Ícone -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✓</text></svg>">
+</head>
+<body>
+    <!-- WCAG 2.2: Link de pular para conteúdo principal -->
+    <a href="#main-content" class="skip-link">Pular para conteúdo principal</a>
+    
+    <header>
+        <h1>📝 Lista de Tarefas Acessível</h1>
+        <p>Uma aplicação web desenvolvida com Flask, priorizando acessibilidade (WCAG 2.2), segurança (OWASP) e privacidade (LGPD)</p>
+    </header>
+    
+    <main id="main-content">
+        <!-- Mensagens Flash (feedback para o usuário) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Conteúdo específico de cada página -->
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+        <p style="text-align: center; margin-top: 40px; color: #666; font-size: 0.9rem;">
+            Desenvolvido com Flask | Conformidade: WCAG 2.2, OWASP Top 10, LGPD
+        </p>
+    </footer>
+</body>
+</html>

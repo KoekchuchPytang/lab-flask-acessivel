@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Minhas Tarefas{% endblock %}
+
+{% block content %}
+    <!-- Formulário para adicionar nova tarefa -->
+    <section aria-labelledby="form-title">
+        <h2 id="form-title" style="display: none;">Adicionar Nova Tarefa</h2>
+        
+        <form method="POST" action="{{ url_for('adicionar') }}" class="form-adicionar">
+            <div class="form-group">
+                <!-- WCAG 2.2: Label associado ao input com for/id -->
+                <label for="titulo-tarefa">Nova Tarefa:</label>
+                <input 
+                    type="text" 
+                    id="titulo-tarefa" 
+                    name="titulo" 
+                    required 
+                    aria-required="true" 
+                    placeholder="Ex: Estudar WCAG 2.2"
+                    aria-label="Digite o título da nova tarefa"
+                >
+                <small>Pressione Enter ou clique em "Adicionar" para incluir</small>
+            </div>
+            
+            <button type="submit" class="btn" aria-label="Adicionar nova tarefa à lista">
+                ➕ Adicionar Tarefa
+            </button>
+        </form>
+    </section>
+
+    <!-- Lista de tarefas -->
+    <section aria-labelledby="lista-tarefas-title">
+        <h2 id="lista-tarefas-title">Minhas Tarefas</h2>
+        
+        {% if tarefas %}
+            <div class="lista-tarefas" role="list" aria-label="Lista de tarefas">
+                {% for tarefa in tarefas %}
+                    <div class="tarefa-item {% if tarefa.concluida %}tarefa-concluida{% endif %}" 
+                         role="listitem"
+                         aria-label="Tarefa: {{ tarefa.titulo }}, Status: {% if tarefa.concluida %}concluída{% else %}pendente{% endif %}">
+                        
+                        <form method="POST" action="{{ url_for('alternar', tarefa_id=tarefa.id) }}" style="display: inline;">
+                            <input 
+                                type="checkbox" 
+                                id="tarefa-{{ tarefa.id }}" 
+                                class="tarefa-checkbox"
+                                {% if tarefa.concluida %}checked{% endif %}
+                                onChange="this.form.submit()"
+                                aria-label="{% if tarefa.concluida %}Desmarcar{% else %}Marcar{% endif %} tarefa '{{ tarefa.titulo }}' como concluída"
+                            >
+                            <label for="tarefa-{{ tarefa.id }}" style="display: none;">
+                                {% if tarefa.concluida %}Desmarcar{% else %}Marcar{% endif %} como concluída
+                            </label>
+                        </form>
+                        
+                        <span class="tarefa-titulo">{{ tarefa.titulo }}</span>
+                        
+                        <div class="tarefa-acoes">
+                            <form method="POST" action="{{ url_for('deletar', tarefa_id=tarefa.id) }}" 
+                                  onsubmit="return confirm('Tem certeza que deseja excluir esta tarefa?');"
+                                  style="display: inline;">
+                                <button type="submit" class="btn btn-excluir" 
+                                        aria-label="Excluir tarefa '{{ tarefa.titulo }}'">
+                                    🗑️ Excluir
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="text-align: center; padding: 30px; background: white; border-radius: 8px;">
+                🎉 Nenhuma tarefa pendente! Adicione uma nova tarefa acima.
+            </p>
+        {% endif %}
+    </section>
+{% endblock %}
